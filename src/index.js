@@ -31,7 +31,7 @@ function Operation(a, b = 0, op = "+"){
 
 function Key(props){
     return(
-        <div id={props.id} className="button" onClick={props.callback}>{props.label}</div>
+        <div id={props.id} className="button" onClick={props.callback} onKeyPress={props.callback} tabIndex={props.tabIndex}>{props.label}</div>
     )
 }
 
@@ -44,29 +44,30 @@ function Display(props){
 }
 
 function Keypad(props){
+    let index = 1;
     return(
         <div id="keypad">
-            <Key id="clear"     label="AC"  callback={props.callback}/>
-            <Key id="add"       label="+"   callback={props.callback}/>
+            <Key id="clear"     label="AC"  callback={props.callback} tabIndex={index++}/>
+            <Key id="add"       label="+"   callback={props.callback} tabIndex={index++}/>
 
-            <Key id="one"       label="1"   callback={props.callback}/>
-            <Key id="two"       label="2"   callback={props.callback}/>
-            <Key id="three"     label="3"   callback={props.callback}/>
-            <Key id="subtract"  label="-"   callback={props.callback}/>
+            <Key id="one"       label="1"   callback={props.callback} tabIndex={index++}/>
+            <Key id="two"       label="2"   callback={props.callback} tabIndex={index++}/>
+            <Key id="three"     label="3"   callback={props.callback} tabIndex={index++}/>
+            <Key id="subtract"  label="-"   callback={props.callback} tabIndex={index++}/>
 
-            <Key id="four"      label="4"   callback={props.callback}/>
-            <Key id="five"      label="5"   callback={props.callback}/>
-            <Key id="six"       label="6"   callback={props.callback}/>
-            <Key id="multiply"  label="×"   callback={props.callback}/>
+            <Key id="four"      label="4"   callback={props.callback} tabIndex={index++}/>
+            <Key id="five"      label="5"   callback={props.callback} tabIndex={index++}/>
+            <Key id="six"       label="6"   callback={props.callback} tabIndex={index++}/>
+            <Key id="multiply"  label="×"   callback={props.callback} tabIndex={index++}/>
 
-            <Key id="seven"     label="7"   callback={props.callback}/>
-            <Key id="eight"     label="8"   callback={props.callback}/>
-            <Key id="nine"      label="9"   callback={props.callback}/>
-            <Key id="divide"    label="÷"   callback={props.callback}/>
+            <Key id="seven"     label="7"   callback={props.callback} tabIndex={index++}/>
+            <Key id="eight"     label="8"   callback={props.callback} tabIndex={index++}/>
+            <Key id="nine"      label="9"   callback={props.callback} tabIndex={index++}/>
+            <Key id="divide"    label="÷"   callback={props.callback} tabIndex={index++}/>
 
-            <Key id="zero"      label="0"   callback={props.callback}/>
-            <Key id="decimal"   label="."   callback={props.callback}/>
-            <Key id="equals"    label="="   callback={props.callback}/>
+            <Key id="zero"      label="0"   callback={props.callback} tabIndex={index++}/>
+            <Key id="decimal"   label="."   callback={props.callback} tabIndex={index++}/>
+            <Key id="equals"    label="="   callback={props.callback} tabIndex={index++}/>
         </div>
     );
 }
@@ -85,13 +86,15 @@ class Calculator extends React.Component{
     }
 
     handleClick(e){
-        switch(e.target.id){
-            case "clear": this.setState({formula: "", mode: "start operation"}); break;
-            case "equals":
-                if(/[+\-×÷]/.test(this.state.formula.slice(-1))) return;
-                this.evaluate(this.state.formula);
-                break;
-            default: this.insert(e.target.innerHTML);
+        if( e.key === "Enter" || e.type === "click"){
+            switch(e.target.id){
+                case "clear": this.setState({formula: "", mode: "start operation"}); break;
+                case "equals":
+                    if(/[+\-×÷]/.test(this.state.formula.slice(-1))) return;
+                    this.evaluate(this.state.formula);
+                    break;
+                default: this.insert(e.target.innerHTML);
+            }
         }
     }
 
