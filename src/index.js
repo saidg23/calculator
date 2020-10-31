@@ -22,7 +22,7 @@ function Operation(a, b = 0, op = "+"){
         switch(this.op){
             case "+": return a + b;
             case "-": return a - b;
-            case "x": return a * b;
+            case "×": return a * b;
             case "÷": return a / b;
             default: console.log("invalid op");
         }
@@ -57,7 +57,7 @@ function Keypad(props){
             <Key id="four"      label="4"   callback={props.callback}/>
             <Key id="five"      label="5"   callback={props.callback}/>
             <Key id="six"       label="6"   callback={props.callback}/>
-            <Key id="multiply"  label="x"   callback={props.callback}/>
+            <Key id="multiply"  label="×"   callback={props.callback}/>
 
             <Key id="seven"     label="7"   callback={props.callback}/>
             <Key id="eight"     label="8"   callback={props.callback}/>
@@ -88,7 +88,7 @@ class Calculator extends React.Component{
         switch(e.target.id){
             case "clear": this.setState({formula: "", mode: "start operation"}); break;
             case "equals":
-                if(/[+\-x÷]/.test(this.state.formula.slice(-1))) return;
+                if(/[+\-×÷]/.test(this.state.formula.slice(-1))) return;
                 this.evaluate(this.state.formula);
                 break;
             default: this.insert(e.target.innerHTML);
@@ -102,12 +102,12 @@ class Calculator extends React.Component{
         }
 
         //tokenizes formula
-        let regex = /(\d+\.?(\d+)?|[+-x÷])/; //matches either an operator or a number
+        let regex = /(\d+\.?(\d+)?|[+\-×÷])/; //matches either an operator or a number
         let tokens = [];
         while(formula.length > 0){
             let object = regex.exec(formula);
             let token = null;
-            if(/[+\-x÷]/.test(object[0])){
+            if(/[+\-×÷]/.test(object[0])){
                 token = {type: "op", value: object[0]};
             }
             else{
@@ -169,7 +169,7 @@ class Calculator extends React.Component{
 
         // console.log(operations[0].eval());
         let solution = Math.floor(operations[0].eval() * 10000) / 10000;
-        this.setState({formula: solution});
+        this.setState({formula: solution, mode: "solved"});
     }
 
     insert(char){
@@ -180,6 +180,9 @@ class Calculator extends React.Component{
         switch(char){
             case "0":
                 switch(this.state.mode){
+                    case "solved":
+                        this.setState({formula: char, mode: "start zero"});
+                        break;
                     case "start operation":
                         this.setState({formula: this.state.formula + char, mode: "start zero"});
                         break;
@@ -200,10 +203,11 @@ class Calculator extends React.Component{
                 }
                 break;
             case "+":
-            case "x":
+            case "×":
             case "÷":
                 if(this.state.formula.length === 0) return;
                 switch(this.state.mode){
+                    case "solved":
                     case "insert digit":
                     case "insert float":
                         this.setState({formula: this.state.formula + char, mode: "start operation"});
@@ -217,6 +221,7 @@ class Calculator extends React.Component{
                 break;
             case "-":
                 switch(this.state.mode){
+                    case "solved":
                     case "insert digit":
                     case "insert float":
                         this.setState({formula: this.state.formula + char, mode: "start operation"});
@@ -229,6 +234,9 @@ class Calculator extends React.Component{
                 break;
             default:
                 switch(this.state.mode){
+                    case "solved":
+                        this.setState({formula: char, mode: "insert digit"});
+                        break;
                     case "insert float":
                         this.setState({formula: this.state.formula + char});
                         break;
