@@ -172,7 +172,7 @@ class Calculator extends React.Component{
 
         // console.log(operations[0].eval());
         let solution = Math.floor(operations[0].eval() * 10000) / 10000;
-        this.setState({formula: solution, mode: "solved"});
+        this.setState({formula: solution.toString(), mode: "solved"});
     }
 
     insert(char){
